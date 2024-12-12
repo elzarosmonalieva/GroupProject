@@ -1,3 +1,5 @@
+package API;
+
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.json.JSONObject;
@@ -26,7 +28,7 @@ public class IntroToPostRequest {
                 .baseUri("https://backend.cashwise.us")
                 .body(requestBody.toString())
                 .when()
-                .post("/api/myaccount/products")
+                .post("/API/myaccount/products")
                 .then()
                 .statusCode(201)
                 .body("product_title", equalTo("manty"))
