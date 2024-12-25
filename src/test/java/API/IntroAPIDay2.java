@@ -1,5 +1,6 @@
 package API;
 
+import Utilities.Config;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,25 +19,25 @@ import java.util.HashMap;
 
 public class IntroAPIDay2 {
     public static void main(String[] args) throws JsonProcessingException {
-        String token ="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE3MzU2OTU1ODksImlhdCI6MTczMzEwMzU4OSwidXNlcm5hbWUiOiJCYXRjaHNldmVuQGdtYWlsLmNvbSJ9.6gdVMxdUcA0tRRh8ulOWKOu2itJsQFoW8sFuyXLooI5N6GXOFdwc8yNCcvB8D9UtqKYDthL6C4lY4solJgdJ0w";
-        String url = "https://backend.cashwise.us/api/myaccount/clients";
+
         HashMap<String, Object> params = new HashMap();
         params.put("isArchived", false);
         params.put("page", 1);
         params.put("size", 10);
-        Response response1 = RestAssured.given().auth().oauth2(token).params(params).get(url);
+        Response response1 = RestAssured.given().auth().oauth2(Config.getProp("token")).params(params).get(Config.getProp("cashwise")+"/api/myaccount/clients");
         Assert.assertEquals(response1.statusCode(), 200);
-       String email = response1.jsonPath().get("responses[0].email");
+        String email = response1.jsonPath().get("responses[0].email");
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         CustomResponse customResponse = mapper.readValue(response1.asString(), CustomResponse.class);
         System.out.println(customResponse.getClass());
 
+
     }
         @Test
 public void createSeller(){
-        String endpoint = "";
-        String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE3MzU2OTU1ODksImlhdCI6MTczMzEwMzU4OSwidXNlcm5hbWUiOiJCYXRjaHNldmVuQGdtYWlsLmNvbSJ9.6gdVMxdUcA0tRRh8ulOWKOu2itJsQFoW8sFuyXLooI5N6GXOFdwc8yNCcvB8D9UtqKYDthL6C4lY4solJgdJ0w";
+        String endpoint = "/api/myaccount/clients";
+
             RequestBody requestBody = new RequestBody();
             Faker faker = new Faker();
             requestBody.setAddress(String.valueOf(faker.address()));
@@ -47,15 +48,16 @@ public void createSeller(){
 
         Response response = RestAssured.given()
                 .auth()
-                .oauth2(token)
+                .oauth2(Config.getProp("token"))
                 .contentType(ContentType.JSON)
                 .body(requestBody)
-                .post("https://backend.cashwise.us/api/myaccount/sellers" );
+                .post(Config.getProp("cashwise")+endpoint);
+            System.out.println(response.prettyPrint());
 
         }
         @Test
     public void editSeller(){
-            String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE3MzU2OTU1ODksImlhdCI6MTczMzEwMzU4OSwidXNlcm5hbWUiOiJCYXRjaHNldmVuQGdtYWlsLmNvbSJ9.6gdVMxdUcA0tRRh8ulOWKOu2itJsQFoW8sFuyXLooI5N6GXOFdwc8yNCcvB8D9UtqKYDthL6C4lY4solJgdJ0w";
+
             RequestBody requestBody = new RequestBody();
             Faker faker = new Faker();
             requestBody.setAddress(String.valueOf(faker.address()));
@@ -64,14 +66,14 @@ public void createSeller(){
             requestBody.setSeller_name(String.valueOf(faker.name()));
 
 
-
+            String endpoint ="/api/myaccount/clients";;
             Response response = RestAssured.given()
                     .auth()
-                    .oauth2(token)
+                    .oauth2(Config.getProp("token"))
                     .contentType(ContentType.JSON)
                     .body(requestBody)
-                    .put("https://backend.cashwise.us/api/myaccount/sellers/5966" );
-            System.out.println(response.prettyPrint());
+                    .post(Config.getProp("cashwise")+endpoint+"/5966" );
+
 
         }
 

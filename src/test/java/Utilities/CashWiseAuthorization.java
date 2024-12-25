@@ -7,20 +7,14 @@ import io.restassured.response.Response;
 import org.testng.annotations.Test;
 
 public class CashWiseAuthorization {
-    @Test
-public  String getToken(){
+    public  static String getToken(){
             RequestBody requestBody = new RequestBody();
-            requestBody.setUsername(Config.getProp("username"));
+            requestBody.setEmail(Config.getProp("email"));
             requestBody.setPassword(Config.getProp("password"));
             Response response = RestAssured.given()
                     .contentType(ContentType.JSON)
                     .body(requestBody)
-                    .post(Config.getProp("cashwiseApiBaseUrl") + "/api/myaccount/auth/login");
-        System.out.println(response.prettyPrint());
-return response.jsonPath().get("jwt_token");
-
-
-
+                    .post(Config.getProp("cashwise") + "/api/myaccount/auth/login");
+return response.jsonPath().getString("jwt_token");
     }
-
 }
